@@ -1,0 +1,11 @@
+CoinBot is not to be used for anything other than personal use in your own chat. It is not to be for any commercial use. You can not sell, other lock in any other form, access to any part of CoinBot unless there is written consent from Marked Bots (or Halfpetal LLC).
+
+Marked Bots owns all parts of CoinBot (code, database, web documentation, etc) and reserves the right to suspend or terminate your right for usage of CoinBot.
+
+You are allowed to fork and modify CoinBot for your own personal needs as it fits this license. You are not allowed to distribute the code or the modified code any other place than GitHub. You are allowed to run CoinBot on your own personal computer, you are not to allow anyone else to run it on your behalf. You must keep all source code public, and you must include this license in all modified versions.
+
+You must attribute all credit back to Marked Bots or it's parent company Halfpetal LLC. You have no right to claim any portion of the code except for the code you wrote.
+
+You are allowd to contribute to the CoinBot project, but upon contribution all works belong to Marked Bots and it's parent company Halfpetal LLC. You can not withdraw your contribution.
+
+We reserve the right to update this license at any given time without prior notice.
