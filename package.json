@@ -1,0 +1,9 @@
+{
+    "name": "coinbot",
+    "version": "1.0.0-beta",
+    "main": "CoinBot.js",
+    "dependencies": {
+        "sequelize": "^4.37.7",
+        "sqlite3": "^4.0.0"
+    }
+}
