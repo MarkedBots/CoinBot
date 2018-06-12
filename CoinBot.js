@@ -11,18 +11,20 @@ exports.constructor = (api, helper) => {
 
     this.database.users.sync();
 
-    api.roster().then(roster => {
-      roster.members.forEach(member => {
-        this.database.users.findOrCreate({
-          where: {
-            id: member.userId
-          },
-          defaults: {
-            name: member.username
-          }
-        }).spread((user, created) => {});
+    setInterval(() => {
+      api.roster().then(roster => {
+        roster.members.forEach(member => {
+          this.database.users.findOrCreate({
+            where: {
+              id: member.userId
+            },
+            defaults: {
+              name: member.username
+            }
+          }).spread((user, created) => {});
+        });
       });
-    });
+    }, 10000);
 };
 
 exports.balance = {
