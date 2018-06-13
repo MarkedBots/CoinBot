@@ -4,6 +4,7 @@ let con = new Sequelize(null, null, null, {
     dialect: "sqlite",
     storage: "db.sqlite",
     operatorsAliases: false,
+    logging: false,
     define: {
         underscored: true
     }
