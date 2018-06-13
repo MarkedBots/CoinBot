@@ -4,9 +4,8 @@ exports.commands = ["balance",
                     "rps",
                     "give"];
 
-const GuessTheNumber = require("./lib/GuessTheNumber");
-const RockPaperScissors = require("./lib/RPS");
-let AdminCommands;
+let adminCommands;
+let gamblingCommands;
 let api;
 let helper;
 let database;
@@ -19,7 +18,8 @@ exports.constructor = (api, helper) => {
     this.permissions = require("./database/permissions")(this.database);
     this.database.users.sync();
 
-    this.AdminCommands = require("./lib/admin")(this.database, this.api);
+    this.adminCommands = require("./lib/admin")(this.database, this.api);
+    this.gamblingCommands = require("./lib/user/gambling");
 
     setInterval(() => {
         api.roster().then(roster => {
@@ -59,7 +59,7 @@ exports.guessthenumber = {
     execute: (command, parameters, message) => {
         this.checkForUser(message.userId, message.username);
 
-        GuessTheNumber.GTN(this.database, this.api, parameters, message);
+        this.gambling.GTN(this.database, this.api, parameters, message);
     }
 }
 
@@ -73,7 +73,7 @@ exports.rps = {
     execute: (command, parameters, message) => {
         this.checkForUser(message.userId, message.username);
 
-        RockPaperScissors.RPS(this.database, this.api, parameters, message);
+        this.gamblingCommands.RPS(this.database, this.api, parameters, message);
     }
 }
 
