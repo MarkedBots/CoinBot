@@ -59,7 +59,7 @@ exports.guessthenumber = {
     execute: (command, parameters, message) => {
         this.checkForUser(message.userId, message.username);
 
-        this.gambling.GTN(this.database, this.api, parameters, message);
+        this.gamblingCommands.GTN(this.database, this.api, parameters, message);
     }
 }
 
