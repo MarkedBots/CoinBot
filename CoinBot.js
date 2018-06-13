@@ -1,17 +1,25 @@
-exports.commands = ["balance", "guessthenumber", "gtn"];
+exports.commands = ["balance",
+                    "guessthenumber",
+                    "gtn",
+                    "rps",
+                    "give"];
 
 const GuessTheNumber = require("./lib/GuessTheNumber");
-
+const RockPaperScissors = require("./lib/RPS");
+let AdminCommands;
 let api;
 let helper;
 let database;
+let permissions;
 
 exports.constructor = (api, helper) => {
     this.api = api;
     this.helper = helper;
     this.database = require("./database");
-
+    this.permissions = require("./database/permissions")(this.database);
     this.database.users.sync();
+
+    this.AdminCommands = require("./lib/admin")(this.database, this.api);
 
     setInterval(() => {
         api.roster().then(roster => {
@@ -21,7 +29,7 @@ exports.constructor = (api, helper) => {
                         id: member.userId
                     },
                     defaults: {
-                        name: member.username
+                        name: member.slug
                     }
                 }).spread((user, created) => {
                     user.balance += 10;
@@ -39,10 +47,10 @@ exports.balance = {
                 id: message.userId
             },
             defaults: {
-                name: message.username
+                name: message.slug
             }
         }).spread((user, created) => {
-            this.api.say("@" + message.username + "'s Balance: " + user.balance);
+            this.api.say(message.username + "'s Balance: " + user.balance);
         });
     }
 };
@@ -61,13 +69,34 @@ exports.gtn = {
     }
 }
 
+exports.rps = {
+    execute: (command, parameters, message) => {
+        this.checkForUser(message.userId, message.username);
+
+        RockPaperScissors.RPS(this.database, this.api, parameters, message);
+    }
+}
+
+exports.give = {
+    execute: (command, parameters, message) => {
+            this.checkForUser(message.userId, message.username);
+
+            if(this.permissions.check(message.userId, "admin") == false) {
+                console.log(message.username + " attempted the admin command: give");
+                return;
+            }
+
+            this.AdminCommands.give(parameters, message);
+    }
+}
+
 exports.checkForUser = (userId, username) => {
     this.database.users.findOrCreate({
         where: {
             id: userId
         },
         defaults: {
-            name: username
+            name: username.toLowerCase()
         }
     }).spread((user, created) => {});
 }
