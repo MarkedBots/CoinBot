@@ -86,7 +86,7 @@ exports.give = {
                 return;
             }
 
-            this.AdminCommands.give(parameters, message);
+            this.adminCommands.give(parameters, message);
     }
 }
 
