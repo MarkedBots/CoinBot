@@ -2,3 +2,7 @@
 node_modules/
 *.log
 *.sqlite
+old/
+coinbot.json
+dist/
+coinbot.js
