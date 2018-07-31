@@ -9,7 +9,9 @@ export class Database {
         this.db = lowdb(new FileSync("coinbot.json"));
 
         this.db.defaults({
-            users: []
+            users: [],
+            admins: [],
+            mods: []
         }).write();
 
         this.usersModel = new Users(this.db);
@@ -17,6 +19,14 @@ export class Database {
 
     public users(): Users {
         return this.usersModel;
+    }
+
+    public admins(): Array<any> {
+        return this.db.get("admins").value();
+    }
+
+    public mods(): Array<any> {
+        return [];
     }
 }
 
@@ -29,7 +39,7 @@ export class Users implements Model {
         this.table = "users";
     }
 
-    public create(data: any): object {
+    public create(data: any): UserObject {
         if (!this.has(data.userId)) {
             this.db.get(this.table)
                    .push({
@@ -40,26 +50,80 @@ export class Users implements Model {
                    .write();
         }
 
-        return this.find(data.userId);
+        return <UserObject>this.find(data.userId);
     }
 
-    public findOrCreate(userId: string, defaults?: object): object {
+    public findOrCreate(userId: string, defaults?: object): UserObject {
+        let entry = {};
+
         if (this.has(userId)) {
-            return this.find(userId);
+            entry = this.find(userId);
         } else {
-            return this.create(defaults);
+            entry = this.create(defaults);
         }
+
+        return <UserObject>entry;
     }
 
-    public find(userId: string): object {
-        return this.db.get(this.table)
+    public find(userId: string): UserObject {
+        let entry: any = this.db.get(this.table)
                       .find({ id: userId })
                       .value();
+
+        if (entry === undefined) {
+            return null;
+        }
+
+        let userobj: UserObject = {
+            userId: entry.id,
+            name: entry.name,
+            coins: entry.coins
+        };
+
+        return userobj;
     }
 
     public has(userId: string): boolean {
-        return this.find(userId) !== undefined;
+        return this.find(userId) !== null;
     }
+
+    public hasCoins(userId: string, wantedAmount: number): boolean {
+        if (!this.has(userId)) {
+            console.error("No user with the id " + userId + " exists.");
+        }
+
+        return this.find(userId).coins >= wantedAmount;
+    }
+
+    public incrementCoin(userId: string, incrementBy: number = 1): number {
+        if (!this.has(userId)) {
+            console.error("No user with the id " + userId + " exists.");
+        }
+        
+        let newCoins: number = <number>this.find(userId).coins + incrementBy;
+
+        this.db.get(this.table).find({ id: userId }).assign({ coins: newCoins }).write();
+
+        return newCoins;
+    }
+
+    public decrementCoin(userId: string, decrementBy: number = 1): number {
+        if (!this.has(userId)) {
+            console.error("No user with the id " + userId + " exists.");
+        }
+
+        let newCoins: number = <number>this.find(userId).coins - decrementBy;
+
+        this.db.get(this.table).find({ id: userId }).assign({ coins: newCoins }).write();
+
+        return newCoins;
+    }
+}
+
+export interface UserObject {
+    userId: string;
+    name: string;
+    coins: number;
 }
 
 interface Model {
