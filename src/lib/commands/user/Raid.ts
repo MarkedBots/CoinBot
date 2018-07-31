@@ -17,8 +17,17 @@ export class Raid {
     }
 
     public execute(command: any, parameters: Array<string>, message: any): void {
-        this.currentDungeonName = Dungeon.generateName();
-        this.api.say("Starting raid for \"" + this.currentDungeonName + "\"");
+        if (parameters === null || parameters.length < 1) {
+            if (this.joining) {
+                this.api.say("The raid is already in the joining stage. Join with " + process.env.COMMAND_PREFIX + "raid join");
+            } else if (this.started) {
+                this.api.say("The raid has already started, please wait for the next raid.");
+            } else {
+                this.currentDungeonName = Dungeon.generateName();
+                this.api.say("Starting raid for \"" + this.currentDungeonName + "\". Join with " + process.env.COMMAND_PREFIX + "raid join");
+                this.start();
+            }
+        }
     }
 
     private join(): boolean {
@@ -26,6 +35,18 @@ export class Raid {
     }
 
     private start(): void {
+        this.joining = true;
+
+        setTimeout(() => {
+            this.joining = false;
+            this.started = true;
+
+            this.api.say("The raid of \"" + this.currentDungeonName + "\" has begun.");
+            this.raid();
+        }, 12e4);
+    }
+
+    private raid(): void {
         //
     }
 
