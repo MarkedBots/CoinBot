@@ -13,7 +13,7 @@ export class Gambling {
         let coins: number = Number(parameters[0]);
         let guess: number = Number(parameters[1]);
         let returnPercent: number = (parameters[2] !== undefined) ? Number(parameters[2]) : 50;
-        let maxAnswer: number = Math.floor(returnPercent / 2);
+        let maxAnswer: number = Math.floor(returnPercent / 3);
         let answer: number = Math.ceil(Math.random() * (maxAnswer - 1 + 1)) + 1;
 
         if (answer > maxAnswer) {
