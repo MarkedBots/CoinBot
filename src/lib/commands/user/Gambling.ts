@@ -49,12 +49,15 @@ export class Gambling {
         }
     }
 
-    public rps(parameters: any, message: any): void {
+    public rps(parameters: Array<string>, message: any): void {
         let coins: number = Number(parameters[0]);
         let userChoice: string = parameters[1].toLowerCase();
         let botChoicesBase: Array<string> = ["rock", "paper", "scissors"];
         let botChoices: Array<string> = [];
         let botChoice: string = "";
+        let rockProb: number = 0;
+        let paperProb: number = 0;
+        let scissorsProb: number = 0;
 
         if (coins < 10) {
             this.api.say("You must be willing to lose at least 10 coins to play RPS.");
@@ -75,9 +78,25 @@ export class Gambling {
         while (botChoices.length < 25) {
             let choice: string = botChoicesBase[Math.floor(Math.random() * botChoicesBase.length)];
             botChoices.push(choice);
+            
+            switch (choice) {
+                case "rock": 
+                    rockProb++;
+                    break;
+                case "paper":
+                    paperProb++;
+                    break;
+                case "scissors":
+                    scissorsProb++;
+                    break;
+            }
         }
 
         botChoice = botChoices[Math.floor(Math.random() * botChoices.length)];
+
+        if (parameters.indexOf("--show-probability") > -1) {
+            this.api.say("Probabilities: Rock " + (rockProb * 4) + "%, Paper " + (paperProb * 4) + "%, Scissors " + (scissorsProb * 4) + "%");
+        }
 
         if (userChoice === botChoice) {
             this.api.say("We tied " + message.username + "! I won't take anything from you.");
