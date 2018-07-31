@@ -69,6 +69,18 @@ export class Gambling {
             return;
         }
 
+        switch (userChoice) {
+            case "r":
+                userChoice = "rock";
+                break;
+            case "p":
+                userChoice = "paper";
+                break;
+            case "s":
+                userChoice = "scissors";
+                break;
+        }
+
         if ((userChoice !== "rock") && (userChoice !== "paper") && (userChoice !== "scissors")) {
             this.api.say("You need to choose rock, paper, or scissors.");
             return;
