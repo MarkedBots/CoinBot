@@ -17,6 +17,10 @@ export class Database {
         this.usersModel = new Users(this.db);
     }
 
+    public database(): lowdb.LowdbSync<any> {
+        return this.db;
+    }
+
     public users(): Users {
         return this.usersModel;
     }
