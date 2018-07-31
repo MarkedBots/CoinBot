@@ -1,17 +1,20 @@
 import { Database, UserObject } from "./lib/Database";
 import { Gambling } from "./lib/commands/user/Gambling";
 import { Admin } from "./lib/commands/management/Admin";
+import { Raid } from "./lib/commands/user/Raid";
 
 exports.commands = ["balance", "bal", 
                     "guessthenumber", "gtn", 
                     "rockpaperscissors", "rps",
-                    "admin"];
+                    "admin",
+                    "raid"];
 
 let api;
 let helper;
 let database: Database;
 let gambling: Gambling;
 let adminCommand: Admin;
+let raid: Raid; // This handles all raid related commands.
 
 exports.constructor = (api: any, helper: any) => {
     this.api = api;
@@ -19,6 +22,7 @@ exports.constructor = (api: any, helper: any) => {
     this.database = new Database();
     this.gambling = new Gambling(this.database, this.api);
     this.adminCommand = new Admin(this.database, this.api);
+    this.raid = new Raid(this.database, this.api);
 
     setInterval(() => {
         console.log("Fetching roster and updating coins.");
