@@ -12,7 +12,7 @@ export class Gambling {
     public gtn(parameters: any, message: any): void {
         let coins: number = Number(parameters[0]);
         let guess: number = Number(parameters[1]);
-        let returnPercent: number = ((parameters[2] !== "undefined") && (parameters[2] !== null)) ? parameters[2] : 50;
+        let returnPercent: number = (parameters[2] !== undefined) ? Number(parameters[2]) : 50;
         let maxAnswer: number = Math.floor(returnPercent / 2);
         let answer: number = Math.ceil(Math.random() * (maxAnswer - 0 + 1)) + 0;
 
