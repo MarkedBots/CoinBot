@@ -52,6 +52,8 @@ export class Gambling {
     public rps(parameters: any, message: any): void {
         let coins: number = Number(parameters[0]);
         let userChoice: string = parameters[1].toLowerCase();
+        let botChoicesBase: Array<string> = ["rock", "paper", "scissors"];
+        let botChoices: Array<string> = [];
         let botChoice: string = "";
 
         if (coins < 10) {
@@ -69,17 +71,13 @@ export class Gambling {
             return;
         }
 
-        switch (Math.floor(Math.random() * (2 - 0 + 1)) + 0) {
-            case 0:
-                botChoice = "rock";
-                break;
-            case 1:
-                botChoice = "paper";
-                break;
-            case 2:
-                botChoice = "scissors";
-                break;
+
+        while (botChoices.length < 25) {
+            let choice: string = botChoicesBase[Math.floor(Math.random() * botChoicesBase.length)];
+            botChoices.push(choice);
         }
+
+        botChoice = botChoices[Math.floor(Math.random() * botChoices.length)];
 
         if (userChoice === botChoice) {
             this.api.say("We tied " + message.username + "! I won't take anything from you.");
