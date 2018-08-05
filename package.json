@@ -17,7 +17,8 @@
         "url": "git+https://github.com/MarkedBots/CoinBot.git"
     },
     "dependencies": {
-        "lowdb": "^1.0.0"
+        "lowdb": "^1.0.0",
+        "timer-stopwatch": "^0.2.0"
     },
     "devDependencies": {
         "@types/lowdb": "^1.0.4",
