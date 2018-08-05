@@ -9,6 +9,32 @@ export class Gambling {
         this.api = api;
     }
 
+    public gamble(parameters: any, message: any): void {
+        let coins: number = 25;
+        let guess: string = "even";
+        let userGuessed: boolean = false;
+        let answer: number = this.getRandomInt(50, 250);
+
+        if (parameters[0] !== undefined) {
+           coins = Number(parameters[0]); 
+        }
+
+        if (!this.db.users().hasCoins(message.userId, coins)) {
+            this.api.say(`${message.username}, you do not have enough coins to gamble. You need ${coins} coins.`);
+            return;
+        }
+
+        if (parameters[1] !== undefined && (parameters[1].toLowerCase() !== "even" || parameters[1].toLowerCase() !== "odd")) {
+            this.api.say(`${message.username}, you must choose even or odd.`);
+            return;
+        }
+
+        if (parameters[1] !== undefined) {
+            guess = parameters[1].toLowerCase();
+            userGuessed = true;
+        }
+    }
+
     public gtn(parameters: any, message: any): void {
         let coins: number = Number(parameters[0]);
         let guess: number = Number(parameters[1]);
@@ -50,6 +76,11 @@ export class Gambling {
     }
 
     public rps(parameters: Array<string>, message: any): void {
+        if (parameters.length < 2 || parameters === null || parameters === undefined) {
+            this.api.say(message.username + ", you must include a bet and a choice!");
+            return;
+        }
+
         let coins: number = Number(parameters[0]);
         let userChoice: string = parameters[1].toLowerCase();
         let botChoicesBase: Array<string> = ["rock", "paper", "scissors"];
@@ -87,7 +118,7 @@ export class Gambling {
         }
 
 
-        while (botChoices.length < 25) {
+        while (botChoices.length < 200) {
             let choice: string = botChoicesBase[Math.floor(Math.random() * botChoicesBase.length)];
             botChoices.push(choice);
             
@@ -107,7 +138,7 @@ export class Gambling {
         botChoice = botChoices[Math.floor(Math.random() * botChoices.length)];
 
         if (parameters.indexOf("--show-probability") > -1) {
-            this.api.say("Probabilities: Rock " + (rockProb * 4) + "%, Paper " + (paperProb * 4) + "%, Scissors " + (scissorsProb * 4) + "%");
+            this.api.say("Probabilities: Rock " + (rockProb / 2) + "%, Paper " + (paperProb / 2) + "%, Scissors " + (scissorsProb / 2) + "%");
         }
 
         if (userChoice === botChoice) {
@@ -135,5 +166,9 @@ export class Gambling {
 
         this.db.users().decrementCoin(message.userId, coins);
         this.api.say("I chose " + botChoice + ". I win! Thanks for " + coins + " coins " + message.username + "!");
+    }
+
+    private getRandomInt(min: number, max: number) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 }
