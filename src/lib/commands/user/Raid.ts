@@ -62,8 +62,18 @@ export class Raid {
             return;
         }
 
-        if (this.players.length >= 15) {
+        if (this.players.length >= 10) {
             this.api.say(`Sorry ${username} we have a full party (max 15 people).`);
+            return;
+        }
+
+        if (this.inCooldown) {
+            this.api.say(`${username}, we're in cooldown mode. Calm yourself.`);
+            return;
+        }
+
+        if (this.started) {
+            this.api.say(`${username}, you can not join a raid that is in progress!`);
             return;
         }
 
@@ -81,6 +91,8 @@ export class Raid {
 
     private start(): void {
         this.joining = true;
+        this.players = [];
+        this.playersName = [];
         
         this.timerJoining.start();
 
@@ -101,7 +113,7 @@ export class Raid {
         }
 
         this.started = true;
-        let successChance = Math.floor(5 + (this.players.length * 3));
+        let successChance = Math.floor(5 + (this.players.length * 5));
         let loot = this.getRandomInt(1e3, 1e5);
 
         loot = Math.floor(loot + (this.players.length * 100));
