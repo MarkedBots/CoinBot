@@ -94,6 +94,7 @@ export class Users implements Model {
     public hasCoins(userId: string, wantedAmount: number): boolean {
         if (!this.has(userId)) {
             console.error("No user with the id " + userId + " exists.");
+            return false;
         }
 
         return this.find(userId).coins >= wantedAmount;
