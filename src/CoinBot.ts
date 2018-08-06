@@ -2,19 +2,22 @@ import { Database, UserObject } from "./lib/Database";
 import { Gambling } from "./lib/commands/user/Gambling";
 import { Admin } from "./lib/commands/management/Admin";
 import { Raid } from "./lib/commands/user/Raid";
+import { Coins } from "./lib/commands/user/Coins";
 
 exports.commands = ["balance", "bal", 
                     "guessthenumber", "gtn", 
                     "rockpaperscissors", "rps",
                     "admin",
                     "raid",
-                    "transfer"];
+                    "transfer",
+                    "top5"];
 
 let api;
 let helper;
 let database: Database;
 let gambling: Gambling;
 let adminCommand: Admin;
+let coinCommand: Coins;
 let raid: Raid; // This handles all raid related commands.
 
 exports.constructor = (api: any, helper: any) => {
@@ -23,6 +26,7 @@ exports.constructor = (api: any, helper: any) => {
     this.database = new Database();
     this.gambling = new Gambling(this.database, this.api);
     this.adminCommand = new Admin(this.database, this.api);
+    this.coinCommand = new Coins(this.database, this.api);
     this.raid = new Raid(this.database, this.api);
 
     setInterval(() => {
@@ -79,44 +83,15 @@ exports.rps = {
     }
 };
 
+exports.top5 = {
+    execute: (command: any, parameters: any, message: any) => {
+        this.coinCommand.top5();
+    }
+};
+
 exports.transfer = {
     execute: (command: any, parameters: any, message: any) => {
-        if (parameters[0] === undefined || parameters[1] === undefined) {
-            this.api.say("The give command must include a name AND an amount. Ex: !transfer username 10");
-        }
-
-        let username: string = parameters[0].toLowerCase();
-        let amount: number = Number(parameters[1]);
-        let userEntry: any = this.database.database().get("users").find({ name: username }).value();
-
-        if (amount === NaN || amount === undefined) {
-            this.api.say("The amount you gave is not a number.");
-            return;
-        }
-
-        if (amount < 1) {
-            this.api.say("You must transfer more than " + amount + " coins.");
-            return;
-        }
-
-        if (!this.database.users().hasCoins(message.userId, amount)) {
-            this.api.say("You do not have the coins to transfer, " + message.username + ".");
-            return;
-        }
-
-        if (userEntry === undefined) {
-            this.api.say(username + " does not exist in the CoinBot database.");
-            return;
-        }
-
-        let newCoins: number = <number>userEntry.coins + amount;
-
-        this.database.database().get("users").find({ name: username }).assign({ coins: newCoins }).write();
-        this.database.users().decrementCoin(message.userId, amount);
-
-        this.api.say("The coins have been transfered to the account. (" + message.username + " -> " + username + ")");
-
-        return;
+        this.coinCommand.transfer(parameters, message);
     }
 };
 
