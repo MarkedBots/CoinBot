@@ -76,7 +76,7 @@ export class Gambling {
     }
 
     public rps(parameters: Array<string>, message: any): void {
-        if (parameters.length < 2 || parameters === null || parameters === undefined) {
+        if (parameters === null || parameters === undefined || parameters.length < 2) {
             this.api.say(message.username + ", you must include a bet and a choice!");
             return;
         }
