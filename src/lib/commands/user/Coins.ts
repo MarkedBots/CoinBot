@@ -11,8 +11,7 @@ export class Coins {
     
     public top5(): void {
         let message = "";
-        let users = this.db.database().get("users").sortBy("coins").take(5).value();
-        users = users.reverse();
+        let users = this.db.database().get("users").orderBy("coins", "desc").take(5).value();
 
         users.forEach((user, index, arr) => {
             if (index === (arr.length - 1)) {
