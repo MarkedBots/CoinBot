@@ -61,7 +61,7 @@ export class Raid {
             this.join(message.userId, message.username);
         } else if (parameters[0].toLowerCase() === "list") {
             if (this.started || this.joining) {
-                this.api.say("Raid Party: " + this.playersName.join(", "));
+                this.api.say("Raid Party (" + this.players.length + "): " + this.playersName.join(", "));
             }
 
             return;
@@ -149,7 +149,7 @@ export class Raid {
         loot = Math.floor(loot + (this.players.length * this.buyInAmount));
 
         this.api.say(`The raid for "${this.currentDungeonName}" has begun. We have a ${successChance}% chance of success. We're looking at a total loot of ${loot} coins.`);
-        this.api.say("Raid Party: " + this.playersName.join(", "));
+        this.api.say("Raid Party (" + this.players.length + "): " + this.playersName.join(", "));
 
         this.timerRaid.start();
 
