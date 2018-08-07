@@ -11,9 +11,9 @@ export class Raid {
     private inCooldown: boolean = false;
     private buyInAmount: number = 100;
     private cooldownLeft: number = 0;
-    private cooldownTime: number = 3e5; // 10m / 600s / 600,000ms / 6e5
-    private joiningTime: number = 3e5; // 5m / 300s / 300,000ms / 3e5
-    private raidingTime: number = 12e4; // 2m / 120s / 120,000ms / 12e4
+    private cooldownTime: number = 30000; // 10m / 600s / 600,000ms / 6e5
+    private joiningTime: number = 60000; // 5m / 300s / 300,000ms / 3e5
+    private raidingTime: number = 15000; // 2m / 120s / 120,000ms / 12e4
     private players: Array<string> = [];
     private playersName: Array<string> = [];
     private timerCooldown = new stopwatch(this.cooldownTime);
