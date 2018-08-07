@@ -53,6 +53,19 @@ export class Raid {
             }
 
             return;
+        } else if (parameters[0].toLowerCase() === "status") {
+            let msg = "Raid Status: ";
+
+            if (this.inCooldown) {
+                msg += "In Cooldown";
+            } else if (this.joining) {
+                msg += "Joining/Preparation";
+            } else if (this.started) {
+                msg += "Started/Raiding";
+            }
+
+            this.api.say(msg);
+            return;
         }
     }
 
