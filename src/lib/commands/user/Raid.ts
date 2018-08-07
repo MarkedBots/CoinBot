@@ -9,6 +9,7 @@ export class Raid {
     private joining: boolean = false;
     private started: boolean = false;
     private inCooldown: boolean = false;
+    private buyInAmount: number = 100;
     private cooldownLeft: number = 0;
     private cooldownTime: number = 3e5; // 10m / 600s / 600,000ms / 6e5
     private joiningTime: number = 3e5; // 5m / 300s / 300,000ms / 3e5
@@ -31,7 +32,7 @@ export class Raid {
             return;
         }
 
-        if (parameters === null || parameters.length < 1) {
+        if (parameters === null || parameters.length < 1 || (parameters !== null && parameters.length >= 1 && !isNaN(parseInt(parameters[0])))) {
             if (this.joining) {
                 this.api.say("The raid is already in the joining stage. Join with " + process.env.COMMAND_PREFIX + "raid join");
             } else if (this.started) {
@@ -40,6 +41,17 @@ export class Raid {
                 this.timerCooldown = new stopwatch(this.cooldownTime);
                 this.timerJoining = new stopwatch(this.joiningTime);
                 this.timerRaid = new stopwatch(this.raidingTime);
+
+                if (parameters !== null && parameters.length >= 1 && !isNaN(parseInt(parameters[0]))) {
+                    this.buyInAmount = Number(parameters[0]);
+
+                    if (this.buyInAmount < 100) {
+                        this.api.say("The raid buyin must be 100 or more coins!");
+                        return;
+                    }
+                } else {
+                    this.buyInAmount = 100;
+                }
 
                 this.currentDungeonName = Dungeon.generateName();
                 this.api.say("Starting raid for \"" + this.currentDungeonName + "\". Join with " + process.env.COMMAND_PREFIX + "raid join");
@@ -70,8 +82,8 @@ export class Raid {
     }
 
     private join(userId: string, username: string): void {
-        if (!this.db.users().hasCoins(userId, 100)) {
-            this.api.say("Sorry, " + username + ", but you must have at least 100 coins to join the raid.");
+        if (!this.db.users().hasCoins(userId, this.buyInAmount)) {
+            this.api.say("Sorry, " + username + ", but you must have at least " + this.buyInAmount + " coins to join the raid.");
             return;
         }
 
@@ -94,7 +106,7 @@ export class Raid {
             this.api.say(username + " has joined the raid!");
             this.players.push(userId);
             this.playersName.push(username);
-            this.db.users().decrementCoin(userId, 100);
+            this.db.users().decrementCoin(userId, this.buyInAmount);
             return;
         } else {
             this.api.say(username + ", you're already a part of this raid.");
@@ -127,9 +139,14 @@ export class Raid {
 
         this.started = true;
         let successChance = Math.floor(5 + (this.players.length * 5));
-        let loot = this.getRandomInt(1e3, 1e5);
 
-        loot = Math.floor(loot + (this.players.length * 100));
+        if (this.buyInAmount > 100) {
+            let moreChance = Math.floor(this.buyInAmount / 100) < 15 ? Math.floor(this.buyInAmount / 100) : 15;
+            successChance = successChance + moreChance;
+        }
+
+        let loot = this.getRandomInt(1e3, 1e5);
+        loot = Math.floor(loot + (this.players.length * this.buyInAmount));
 
         this.api.say(`The raid for "${this.currentDungeonName}" has begun. We have a ${successChance}% chance of success. We're looking at a total loot of ${loot} coins.`);
         this.api.say("Raid Party: " + this.playersName.join(", "));
@@ -153,7 +170,7 @@ export class Raid {
 
                 this.api.say(`The raid on "${this.currentDungeonName}" was a success! Everyone got ${lootSplit} coins and ${this.playersName[0]} got and extra ${remainder} coin(s) as a finders fee.`);
             } else {
-                this.api.say(`Well, we attempted the raid on "${this.currentDungeonName}," but we lost. Each 100 coin buyin was spent on medical bills.`);
+                this.api.say(`Well, we attempted the raid on "${this.currentDungeonName}," but we lost. Each ${this.buyInAmount} coins buyin was spent on medical bills.`);
             }
 
 
