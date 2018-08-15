@@ -3,6 +3,7 @@ import { Gambling } from "./lib/commands/user/Gambling";
 import { Admin } from "./lib/commands/management/Admin";
 import { Raid } from "./lib/commands/user/Raid";
 import { Coins } from "./lib/commands/user/Coins";
+import { Clan } from "./lib/commands/user/Clan";
 
 exports.commands = ["balance", "bal", 
                     "guessthenumber", "gtn", 
@@ -10,7 +11,8 @@ exports.commands = ["balance", "bal",
                     "admin",
                     "raid",
                     "transfer",
-                    "top5"];
+                    "top5",
+                    "clan"];
 
 let api;
 let helper;
@@ -19,6 +21,7 @@ let gambling: Gambling;
 let adminCommand: Admin;
 let coinCommand: Coins;
 let raid: Raid; // This handles all raid related commands.
+let clan: Clan;
 
 exports.constructor = (api: any, helper: any) => {
     this.api = api;
@@ -28,6 +31,7 @@ exports.constructor = (api: any, helper: any) => {
     this.adminCommand = new Admin(this.database, this.api);
     this.coinCommand = new Coins(this.database, this.api);
     this.raid = new Raid(this.database, this.api);
+    this.clan = new Clan(this.database, this.api);
 
     setInterval(() => {
         console.log("Fetching roster and updating coins.");
@@ -122,6 +126,27 @@ exports.admin = {
 
             this.adminCommand.take(username, amount);
             return;
-        } 
+        } else if (parameters[0].toLowerCase() === "makeitrain" || parameters[0].toLowerCase() === "mir") {
+            if (parameters[1] === undefined ) {
+                this.api.say("The make it rain command must include an amount. Ex: !admin makeitrain 10");
+            }
+
+            let amount: number = Number(parameters[1]);
+
+            this.api.roster().then((roster: any) => {
+                roster.members.forEach((member: any) => {
+                    this.database.users().findOrCreate(member.userId, {
+                        userId: member.userId,
+                        name: member.slug
+                    });
+    
+                    this.database.users().incrementCoin(member.userId, amount);
+                });
+            });
+
+            this.api.say(`@${message.username} is making it rain! IT'S RAINING MONEY! Have ${amount} coins everyone!`);
+
+            return;
+        }
     }
 };

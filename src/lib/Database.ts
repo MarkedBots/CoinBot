@@ -11,7 +11,10 @@ export class Database {
         this.db.defaults({
             users: [],
             admins: [],
-            mods: []
+            mods: [],
+            clans: {
+                
+            }
         }).write();
 
         this.usersModel = new Users(this.db);

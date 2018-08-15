@@ -32,7 +32,7 @@ export class Coins {
         }
 
         let username: string = parameters[0].toLowerCase();
-        let amount: number = Number(parameters[1]);
+        let amount: number = Math.floor(Number(parameters[1]));
         let userEntry: any = this.db.database().get("users").find({ name: username }).value();
 
         if (amount === NaN || amount === undefined) {
