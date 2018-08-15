@@ -16,6 +16,7 @@ exports.commands = ["balance", "bal",
 
 let api;
 let helper;
+let log;
 let database: Database;
 let gambling: Gambling;
 let adminCommand: Admin;
@@ -23,9 +24,10 @@ let coinCommand: Coins;
 let raid: Raid; // This handles all raid related commands.
 let clan: Clan;
 
-exports.constructor = (api: any, helper: any) => {
+exports.constructor = (api: any, helper: any, log: any) => {
     this.api = api;
     this.helper = helper;
+    this.log = log;
     this.database = new Database();
     this.gambling = new Gambling(this.database, this.api);
     this.adminCommand = new Admin(this.database, this.api);
@@ -33,9 +35,9 @@ exports.constructor = (api: any, helper: any) => {
     this.raid = new Raid(this.database, this.api);
     this.clan = new Clan(this.database, this.api);
 
-    setInterval(() => {
-        console.log("Fetching roster and updating coins.");
+    this.log.info("CoinBot active. Will process the stream and multistream rosters every 30 seconds.");
 
+    setInterval(() => {
         this.api.roster().then((roster: any) => {
             roster.members.forEach((member: any) => {
                 this.database.users().findOrCreate(member.userId, {
