@@ -28,7 +28,7 @@ exports.constructor = (api: any, helper: any, log: any) => {
     this.api = api;
     this.helper = helper;
     this.log = log;
-    this.database = new Database();
+    this.database = new Database(this.log);
     this.gambling = new Gambling(this.database, this.api);
     this.adminCommand = new Admin(this.database, this.api);
     this.coinCommand = new Coins(this.database, this.api);

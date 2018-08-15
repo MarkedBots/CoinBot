@@ -5,7 +5,7 @@ export class Database {
     private db: lowdb.LowdbSync<any>;
     private usersModel: Users;
 
-    constructor() {
+    constructor(private log: any) {
         this.db = lowdb(new FileSync("coinbot.json"));
 
         this.db.defaults({
@@ -17,7 +17,7 @@ export class Database {
             }
         }).write();
 
-        this.usersModel = new Users(this.db);
+        this.usersModel = new Users(this.db, this.log);
     }
 
     public database(): lowdb.LowdbSync<any> {
@@ -41,7 +41,7 @@ export class Users implements Model {
     private db: lowdb.LowdbSync<any>;
     public table: string;
 
-    constructor(db: lowdb.LowdbSync<any>) {
+    constructor(db: lowdb.LowdbSync<any>, private log: any) {
         this.db = db;
         this.table = "users";
     }
@@ -96,7 +96,7 @@ export class Users implements Model {
 
     public hasCoins(userId: string, wantedAmount: number): boolean {
         if (!this.has(userId)) {
-            console.error("No user with the id " + userId + " exists.");
+            this.log.error("No user with the id " + userId + " exists.");
             return false;
         }
 
@@ -105,7 +105,7 @@ export class Users implements Model {
 
     public incrementCoin(userId: string, incrementBy: number = 1): number {
         if (!this.has(userId)) {
-            console.error("No user with the id " + userId + " exists.");
+            this.log.error("No user with the id " + userId + " exists.");
         }
         
         let newCoins: number = <number>this.find(userId).coins + incrementBy;
@@ -117,7 +117,7 @@ export class Users implements Model {
 
     public decrementCoin(userId: string, decrementBy: number = 1): number {
         if (!this.has(userId)) {
-            console.error("No user with the id " + userId + " exists.");
+            this.log.error("No user with the id " + userId + " exists.");
         }
 
         let newCoins: number = <number>this.find(userId).coins - decrementBy;
