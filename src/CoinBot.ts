@@ -104,7 +104,7 @@ exports.transfer = {
 exports.admin = {
     execute: (command: any, parameters: any, message: any) => {
         if (!this.adminCommand.isAdmin(message.username)) {
-            console.info(message.username + " attempted to run an admin command. Command: " + message.message);
+            this.log.info(message.username + " attempted to run an admin command. Command: " + message.message);
             return;
         }
 
