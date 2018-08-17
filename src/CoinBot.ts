@@ -35,6 +35,8 @@ exports.constructor = (api: any, helper: any, log: any) => {
     this.raid = new Raid(this.database, this.api);
     this.clan = new Clan(this.database, this.api);
 
+    require("./lib/Updater")(this.log);
+
     this.log.info("CoinBot active. Will process the stream and multistream rosters every 30 seconds.");
 
     setInterval(() => {
