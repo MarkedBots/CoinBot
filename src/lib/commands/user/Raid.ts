@@ -64,6 +64,7 @@ export class Raid {
                 this.currentDungeonName = Dungeon.generateName();
                 this.api.say(`Starting raid for "${this.currentDungeonName}". Join with ${process.env.COMMAND_PREFIX} raid join`);
                 this.start();
+                this.join(message.userId, message.username);
             }
         } else if (parameters[0].toLowerCase() === "join") {
             this.join(message.userId, message.username);
