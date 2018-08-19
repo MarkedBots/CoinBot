@@ -10,10 +10,11 @@ export class Raid {
     private started: boolean = false;
     private inCooldown: boolean = false;
     private buyInAmount: number = 100;
-    private cooldownLeft: number = 0;
-    private cooldownTime: number = 30000; // 10m / 600s / 600,000ms / 6e5
-    private joiningTime: number = 60000; // 5m / 300s / 300,000ms / 3e5
-    private raidingTime: number = 15000; // 2m / 120s / 120,000ms / 12e4
+    private defaultBuyInAmount: number = 100;
+    private minBuyInAmount: number = 100;
+    private cooldownTime: number = 30000; 
+    private joiningTime: number = 60000;
+    private raidingTime: number = 15000;
     private players: Array<string> = [];
     private playersName: Array<string> = [];
     private timerCooldown = new stopwatch(this.cooldownTime);
@@ -23,6 +24,13 @@ export class Raid {
     constructor(database: Database, api: any) {
         this.db = database;
         this.api = api;
+
+        this.cooldownTime = this.db.config().features.raid.timers.cooldown * 1000;
+        this.raidingTime = this.db.config().features.raid.timers.raiding * 1000;
+        this.joiningTime = this.db.config().features.raid.timers.joining * 1000;
+        this.defaultBuyInAmount = Number(this.db.config().features.raid.defaultBuyIn);
+        this.minBuyInAmount = Number(this.db.config().features.raid.minimumBuyIn);
+        this.buyInAmount = this.defaultBuyInAmount;
     }
 
     public execute(command: any, parameters: Array<string>, message: any): void {
@@ -45,23 +53,23 @@ export class Raid {
                 if (parameters !== null && parameters.length >= 1 && !isNaN(parseInt(parameters[0]))) {
                     this.buyInAmount = Number(parameters[0]);
 
-                    if (this.buyInAmount < 100) {
-                        this.api.say("The raid buyin must be 100 or more coins!");
+                    if (this.buyInAmount < this.minBuyInAmount) {
+                        this.api.say(`The raid buyin must be ${this.minBuyInAmount} or more coins!`);
                         return;
                     }
                 } else {
-                    this.buyInAmount = 100;
+                    this.buyInAmount = this.defaultBuyInAmount;
                 }
 
                 this.currentDungeonName = Dungeon.generateName();
-                this.api.say("Starting raid for \"" + this.currentDungeonName + "\". Join with " + process.env.COMMAND_PREFIX + "raid join");
+                this.api.say(`Starting raid for "${this.currentDungeonName}". Join with ${process.env.COMMAND_PREFIX} raid join`);
                 this.start();
             }
         } else if (parameters[0].toLowerCase() === "join") {
             this.join(message.userId, message.username);
         } else if (parameters[0].toLowerCase() === "list") {
             if (this.started || this.joining) {
-                this.api.say("Raid Party (" + this.players.length + "): " + this.playersName.join(", "));
+                this.api.say(`Raid Party (${this.players.length}): ${this.playersName.join(", ")}`);
             }
 
             return;
@@ -83,7 +91,7 @@ export class Raid {
 
     private join(userId: string, username: string): void {
         if (!this.db.users().hasCoins(userId, this.buyInAmount)) {
-            this.api.say("Sorry, " + username + ", but you must have at least " + this.buyInAmount + " coins to join the raid.");
+            this.api.say(`Sorry, ${username}, but you must have at least ${this.buyInAmount} coins to join the raid.`);
             return;
         }
 
@@ -103,13 +111,13 @@ export class Raid {
         }
 
         if (this.players.indexOf(userId) < 0) {
-            this.api.say(username + " has joined the raid!");
+            this.api.say(`${username} has joined the raid!`);
             this.players.push(userId);
             this.playersName.push(username);
             this.db.users().decrementCoin(userId, this.buyInAmount);
             return;
         } else {
-            this.api.say(username + ", you're already a part of this raid.");
+            this.api.say(`${username}, you're already a part of this raid.`);
             return;
         }
     }
@@ -149,7 +157,7 @@ export class Raid {
         loot = Math.floor(loot + (this.players.length * this.buyInAmount));
 
         this.api.say(`The raid for "${this.currentDungeonName}" has begun. We have a ${successChance}% chance of success. We're looking at a total loot of ${loot} coins.`);
-        this.api.say("Raid Party (" + this.players.length + "): " + this.playersName.join(", "));
+        this.api.say(`Raid Party (${this.players.length}): ${this.playersName.join(", ")}`);
 
         this.timerRaid.start();
 
