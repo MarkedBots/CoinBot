@@ -37,7 +37,7 @@ exports.constructor = (api: any, helper: any, log: any) => {
 
     require("./lib/Updater")(this.log);
 
-    this.log.info("CoinBot active. Will process the stream and multistream rosters every 30 seconds.");
+    this.log.info(`CoinBot active. Will process the stream and multistream rosters every ${this.database.config().roster.time} seconds.`);
 
     setInterval(() => {
         this.api.roster().then((roster: any) => {
@@ -47,10 +47,10 @@ exports.constructor = (api: any, helper: any, log: any) => {
                     name: member.slug
                 });
 
-                this.database.users().incrementCoin(member.userId, 10);
+                this.database.users().incrementCoin(member.userId, this.database.config().roster.coins);
             });
         });
-    }, 30000);
+    }, this.database.config().roster.time * 1000);
 };
 
 exports.balance = {
