@@ -87,6 +87,9 @@ export class Raid {
 
             this.api.say(msg);
             return;
+        } else if (parameters[0].toLowerCase() === "info") {
+            this.api.say(`"${this.currentDungeonName}." Cost: ${this.buyInAmount}. Member Count: ${this.players.length}. `);
+            return;
         }
     }
 
@@ -97,7 +100,7 @@ export class Raid {
         }
 
         if (this.players.length >= 10) {
-            this.api.say(`Sorry ${username} we have a full party (max 15 people).`);
+            this.api.say(`Sorry ${username} we have a full party (max 10 people).`);
             return;
         }
 
