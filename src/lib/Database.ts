@@ -9,6 +9,33 @@ export class Database {
         this.db = lowdb(new FileSync("coinbot.json"));
 
         this.db.defaults({
+            config: {
+                roster: {
+                    multistream: false,
+                    coins: 10,
+                    time: 30
+                },
+                features: {
+                    clans: {
+                        enabled: true,
+                        costs: {
+                            create: 100,
+                            disband: 1000
+                        }
+                    },
+                    raid: {
+                        enabled: true,
+                        defaultBuyIn: 100,
+                        minimumBuyIn: 100,
+                        randomDungeonName: true,
+                        timers: {
+                            joining: 45,
+                            raiding: 60,
+                            cooldown: 120
+                        }
+                    },
+                }
+            },
             users: [],
             admins: [],
             mods: [],
@@ -22,6 +49,10 @@ export class Database {
 
     public database(): lowdb.LowdbSync<any> {
         return this.db;
+    }
+
+    public config(): any {
+        return this.db.get("config").value();
     }
 
     public users(): Users {
