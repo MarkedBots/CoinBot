@@ -137,6 +137,7 @@ export class Users implements Model {
     public incrementCoin(userId: string, incrementBy: number = 1): number {
         if (!this.has(userId)) {
             this.log.error("No user with the id " + userId + " exists.");
+            return 0;
         }
         
         let newCoins: number = <number>this.find(userId).coins + incrementBy;
@@ -149,6 +150,7 @@ export class Users implements Model {
     public decrementCoin(userId: string, decrementBy: number = 1): number {
         if (!this.has(userId)) {
             this.log.error("No user with the id " + userId + " exists.");
+            return 0;
         }
 
         let newCoins: number = <number>this.find(userId).coins - decrementBy;
