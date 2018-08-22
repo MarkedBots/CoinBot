@@ -23,17 +23,6 @@ export class Database {
                             disband: 1000
                         }
                     },
-                    raid: {
-                        enabled: true,
-                        defaultBuyIn: 100,
-                        minimumBuyIn: 100,
-                        randomDungeonName: true,
-                        timers: {
-                            joining: 45,
-                            raiding: 60,
-                            cooldown: 120
-                        }
-                    },
                 }
             },
             users: [],
@@ -123,6 +112,15 @@ export class Users implements Model {
 
     public has(userId: string): boolean {
         return this.find(userId) !== null;
+    }
+
+    public getCoins(userId: string): number {
+        if (!this.has(userId)) {
+            this.log.error("No user with the id " + userId + " exists.");
+            return 0;
+        }
+
+        return this.find(userId).coins;
     }
 
     public hasCoins(userId: string, wantedAmount: number): boolean {
