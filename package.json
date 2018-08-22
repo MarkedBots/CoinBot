@@ -1,7 +1,7 @@
 {
     "name": "coinbot",
     "version": "1.0.0-beta.4",
-    "author": "MarkedBots",
+    "author": "markedbots",
     "private": true,
     "main": "dist/CoinBot.js",
     "typings": "dist/CoinBot.js",
