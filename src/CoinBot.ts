@@ -1,15 +1,14 @@
 import { Database, UserObject } from "./lib/Database";
 import { Gambling } from "./lib/commands/user/Gambling";
 import { Admin } from "./lib/commands/management/Admin";
-import { Raid } from "./lib/commands/user/Raid";
 import { Coins } from "./lib/commands/user/Coins";
 import { Clan } from "./lib/commands/user/Clan";
+import { PubSub } from "./lib/PubSub";
 
 exports.commands = ["balance", "bal", 
                     "guessthenumber", "gtn", 
                     "rockpaperscissors", "rps",
                     "admin",
-                    "raid",
                     "transfer",
                     "top5",
                     "clan"];
@@ -17,23 +16,25 @@ exports.commands = ["balance", "bal",
 let api;
 let helper;
 let log;
+let pubsub;
+let pubsubManager;
 let database: Database;
 let gambling: Gambling;
 let adminCommand: Admin;
 let coinCommand: Coins;
-let raid: Raid; // This handles all raid related commands.
 let clan: Clan;
 
-exports.constructor = (api: any, helper: any, log: any) => {
+exports.constructor = (api: any, helper: any, log: any, pubsub: any) => {
     this.api = api;
     this.helper = helper;
     this.log = log;
+    this.pubsub = pubsub;
     this.database = new Database(this.log);
+    this.pubsubManager = new PubSub(this.database, this.pubsub);
     this.gambling = new Gambling(this.database, this.api);
     this.adminCommand = new Admin(this.database, this.api);
     this.coinCommand = new Coins(this.database, this.api);
-    this.raid = new Raid(this.database, this.api);
-    this.clan = new Clan(this.database, this.api);
+    //this.clan = new Clan(this.database, this.api);
 
     require("./lib/Updater")(this.log);
 
