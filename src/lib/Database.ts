@@ -8,7 +8,7 @@ export class Database {
     constructor(private log: any) {
         this.db = lowdb(new FileSync("coinbot.json"));
 
-        this.db.defaults({
+        this.db.defaultsDeep({
             config: {
                 roster: {
                     multistream: false,
