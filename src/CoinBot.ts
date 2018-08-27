@@ -2,7 +2,7 @@ import { Database, UserObject } from "./lib/Database";
 import { Gambling } from "./lib/commands/user/Gambling";
 import { Admin } from "./lib/commands/management/Admin";
 import { Coins } from "./lib/commands/user/Coins";
-import { Clan } from "./lib/commands/user/Clan";
+//import { Clan } from "./lib/commands/user/Clan";
 import { PubSub } from "./lib/PubSub";
 
 exports.commands = ["balance", "bal", 
@@ -22,7 +22,7 @@ let database: Database;
 let gambling: Gambling;
 let adminCommand: Admin;
 let coinCommand: Coins;
-let clan: Clan;
+//let clan: Clan;
 
 exports.constructor = (api: any, helper: any, log: any, pubsub: any) => {
     this.api = api;

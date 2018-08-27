@@ -15,22 +15,10 @@ export class Database {
                     coins: 10,
                     time: 30
                 },
-                features: {
-                    clans: {
-                        enabled: true,
-                        costs: {
-                            create: 100,
-                            disband: 1000
-                        }
-                    },
-                }
             },
             users: [],
             admins: [],
             mods: [],
-            clans: {
-                
-            }
         }).write();
 
         this.usersModel = new Users(this.db, this.log);
