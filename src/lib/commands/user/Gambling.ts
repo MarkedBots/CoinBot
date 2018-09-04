@@ -1,4 +1,5 @@
 import { Database } from "../../Database";
+import { Crypto } from "../../Crypto";
 
 export class Gambling {
     private db: Database;
@@ -118,8 +119,8 @@ export class Gambling {
         }
 
 
-        while (botChoices.length < 200) {
-            let choice: string = botChoicesBase[Math.floor(Math.random() * botChoicesBase.length)];
+        while (botChoices.length < 100) {
+            let choice: string = botChoicesBase[Crypto.randomNumber(0, botChoicesBase.length - 1)];
             botChoices.push(choice);
             
             switch (choice) {
@@ -135,10 +136,10 @@ export class Gambling {
             }
         }
 
-        botChoice = botChoices[Math.floor(Math.random() * botChoices.length)];
+        botChoice = botChoices[Crypto.randomNumber(0, botChoices.length - 1)];
 
         if (parameters.indexOf("--show-probability") > -1) {
-            this.api.say("Probabilities: Rock " + (rockProb / 2) + "%, Paper " + (paperProb / 2) + "%, Scissors " + (scissorsProb / 2) + "%");
+            this.api.say("Probabilities: Rock " + (rockProb) + "%, Paper " + (paperProb) + "%, Scissors " + (scissorsProb) + "%");
         }
 
         if (userChoice === botChoice) {
