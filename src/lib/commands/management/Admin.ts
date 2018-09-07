@@ -1,4 +1,5 @@
 import { Database } from "../../Database";
+import { Helper } from "../../Helper";
 
 export class Admin {
     private db: Database;
@@ -20,7 +21,7 @@ export class Admin {
         }
 
         if (amount < 1) {
-            this.api.say("You must give more than " + amount + " coins.");
+            this.api.say("You must give more than " + Helper.formatCurrency(amount) + " coins.");
             return;
         }
 
@@ -49,7 +50,7 @@ export class Admin {
         }
 
         if (amount < 1) {
-            this.api.say("You must take more than " + amount + " coins.");
+            this.api.say("You must take more than " + Helper.formatCurrency(amount) + " coins.");
             return;
         }
 

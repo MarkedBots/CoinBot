@@ -1,5 +1,6 @@
 import { Database } from "../../Database";
 import { Crypto } from "../../Crypto";
+import { Helper } from "../../Helper";
 
 export class Gambling {
     private db: Database;
@@ -21,7 +22,7 @@ export class Gambling {
         }
 
         if (!this.db.users().hasCoins(message.userId, coins)) {
-            this.api.say(`${message.username}, you do not have enough coins to gamble. You need ${coins} coins.`);
+            this.api.say(`${message.username}, you do not have enough coins to gamble. You need ${Helper.formatCurrency(coins)} coins.`);
             return;
         }
 
@@ -68,11 +69,11 @@ export class Gambling {
             this.db.users().incrementCoin(message.userId, newCoins);
 
             this.api.say("The answer was " + answer + "! " +
-                             message.username + " has won " + newCoins + ".");
+                             message.username + " has won " + Helper.formatCurrency(newCoins) + ".");
         } else {
             this.db.users().decrementCoin(message.userId, coins);
             this.api.say("The answer was " + answer + " (0 - " + maxAnswer + ")! " +
-                             message.username + " has lost " + coins + ".");
+                             message.username + " has lost " + Helper.formatCurrency(coins) + ".");
         }
     }
 
@@ -148,25 +149,25 @@ export class Gambling {
         } else if (userChoice === "rock") {
             if (botChoice === "scissors") {
                 this.db.users().incrementCoin(message.userId, coins);
-                this.api.say("I chose " + botChoice + ". I guess you win, " + message.username + ". Here's " + coins + " coins.");
+                this.api.say("I chose " + botChoice + ". I guess you win, " + message.username + ". Here's " + Helper.formatCurrency(coins) + " coins.");
                 return;
             }
         } else if (userChoice === "paper") {
             if (botChoice === "rock") {
                 this.db.users().incrementCoin(message.userId, coins);
-                this.api.say("I chose " + botChoice + ". I guess you win, " + message.username + ". Here's " + coins + " coins.");
+                this.api.say("I chose " + botChoice + ". I guess you win, " + message.username + ". Here's " + Helper.formatCurrency(coins) + " coins.");
                 return;
             }
         } else if (userChoice === "scissors") {
             if (botChoice === "paper") {
                 this.db.users().incrementCoin(message.userId, coins);
-                this.api.say("I chose " + botChoice + ". I guess you win, " + message.username + ". Here's " + coins + " coins.");
+                this.api.say("I chose " + botChoice + ". I guess you win, " + message.username + ". Here's " + Helper.formatCurrency(coins) + " coins.");
                 return;
             }
         }
 
         this.db.users().decrementCoin(message.userId, coins);
-        this.api.say("I chose " + botChoice + ". I win! Thanks for " + coins + " coins " + message.username + "!");
+        this.api.say("I chose " + botChoice + ". I win! Thanks for " + Helper.formatCurrency(coins) + " coins " + message.username + "!");
     }
 
     private getRandomInt(min: number, max: number) {

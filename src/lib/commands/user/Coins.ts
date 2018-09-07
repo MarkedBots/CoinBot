@@ -1,4 +1,5 @@
 import { Database } from "../../Database";
+import { Helper } from "../../Helper";
 
 export class Coins {
     private db: Database;
@@ -15,9 +16,9 @@ export class Coins {
 
         users.forEach((user, index, arr) => {
             if (index === (arr.length - 1)) {
-                message += `${user.name} (${user.coins})`;
+                message += `${user.name} (${Helper.formatCurrency(user.coins)})`;
             } else {
-                message += `${user.name} (${user.coins}), `;
+                message += `${user.name} (${Helper.formatCurrency(user.coins)}), `;
             }
         });
         
@@ -41,7 +42,7 @@ export class Coins {
         }
 
         if (amount < 1) {
-            this.api.say("You must transfer more than " + amount + " coins.");
+            this.api.say("You must transfer more than " + Helper.formatCurrency(amount) + " coins.");
             return;
         }
 
