@@ -15,6 +15,11 @@ export class Database {
                     coins: 10,
                     time: 30
                 },
+                currency: {
+                    name: "coin",
+                    namePlural: "coins",
+                    symbol: "₡"
+                }
             },
             users: [],
             admins: [],
@@ -30,6 +35,10 @@ export class Database {
 
     public config(): any {
         return this.db.get("config").value();
+    }
+
+    public currency(): any {
+        return this.config().currency;
     }
 
     public users(): Users {
