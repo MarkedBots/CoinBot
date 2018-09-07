@@ -4,7 +4,8 @@ import { Admin } from "./lib/commands/management/Admin";
 import { Coins } from "./lib/commands/user/Coins";
 //import { Clan } from "./lib/commands/user/Clan";
 import { PubSub } from "./lib/PubSub";
-
+import { Helper as CBHelper } from "./lib/Helper";
+ 
 exports.commands = ["balance", "bal", 
                     "guessthenumber", "gtn", 
                     "rockpaperscissors", "rps",
@@ -33,8 +34,11 @@ exports.constructor = (api: any, helper: any, log: any, pubsub: any) => {
     this.pubsubManager = new PubSub(this.database, this.pubsub);
     this.gambling = new Gambling(this.database, this.api);
     this.adminCommand = new Admin(this.database, this.api);
-    this.coinCommand = new Coins(this.database, this.api);
+    this.coinCommand = new Coins(this.database, this.api, this.helper);
     //this.clan = new Clan(this.database, this.api);
+
+    CBHelper.setCBCEHelper(this.helper);
+    CBHelper.setDatabase(this.database);
 
     require("./lib/Updater")(this.log);
 
@@ -57,8 +61,8 @@ exports.constructor = (api: any, helper: any, log: any, pubsub: any) => {
 exports.balance = {
     execute: (command: any, parameters: any, message: any) => {
         let user: UserObject = this.database.users().findOrCreate(message.userId, { userId: message.userId, name: message.slug });
-
-        this.api.say(message.username + "'s Balance: " + user.coins);
+        
+        this.api.say(message.username + "'s Balance: " + CBHelper.formatCurrency(user.coins));
     }
 };
 
@@ -149,7 +153,7 @@ exports.admin = {
                 });
             });
 
-            this.api.say(`@${message.username} is making it rain! IT'S RAINING MONEY! Have ${amount} coins everyone!`);
+            this.api.say(`${message.username} is making it rain! IT'S RAINING MONEY! Have ${CBHelper.formatCurrency(amount)} coins everyone!`);
 
             return;
         }
