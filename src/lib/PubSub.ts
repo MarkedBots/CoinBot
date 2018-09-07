@@ -1,4 +1,5 @@
 import { Database } from "./Database";
+import { Helper } from "./Helper";
 
 export class PubSub {
     public db: Database;
@@ -19,6 +20,10 @@ export class PubSub {
 
         this.pubsub.subscribe("economy.getBalance", (data: any, topic: any) => {
             return this.db.users().getCoins(data.userId);
+        });
+
+        this.pubsub.subscribe("economy.currency.format", (data: any, topic: any) => {
+            return Helper.formatCurrency(data.amount);
         });
     }
 }
