@@ -34,7 +34,7 @@ exports.constructor = (api: any, helper: any, log: any, pubsub: any) => {
     this.pubsubManager = new PubSub(this.database, this.pubsub);
     this.gambling = new Gambling(this.database, this.api);
     this.adminCommand = new Admin(this.database, this.api);
-    this.coinCommand = new Coins(this.database, this.api, this.helper);
+    this.coinCommand = new Coins(this.database, this.api);
     //this.clan = new Clan(this.database, this.api);
 
     CBHelper.setCBCEHelper(this.helper);
