@@ -19,17 +19,19 @@ let helper;
 let log;
 let pubsub;
 let pubsubManager;
+let i18n;
 let database: Database;
 let gambling: Gambling;
 let adminCommand: Admin;
 let coinCommand: Coins;
 //let clan: Clan;
 
-exports.constructor = (api: any, helper: any, log: any, pubsub: any) => {
+exports.constructor = (api: any, helper: any, log: any, pubsub: any, i18n: any) => {
     this.api = api;
     this.helper = helper;
     this.log = log;
     this.pubsub = pubsub;
+    this.i18n = i18n;
     this.database = new Database(this.log);
     this.pubsubManager = new PubSub(this.database, this.pubsub);
     this.gambling = new Gambling(this.database, this.api);
@@ -153,7 +155,10 @@ exports.admin = {
                 });
             });
 
-            this.api.say(`${message.username} is making it rain! IT'S RAINING MONEY! Have ${CBHelper.formatCurrency(amount)} coins everyone!`);
+            this.api.say(this.i18n.get("admin.makeitrain", "&username is making it rain! IT'S RAINING MONEY! Have &amount coins everyone!", {
+                "username": message.username,
+                "amount": CBHelper.formatCurrency(amount)
+            }));
 
             return;
         }
