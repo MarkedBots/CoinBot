@@ -3,12 +3,13 @@
     "version": "1.0.0-beta.4",
     "author": "markedbots",
     "private": true,
-    "main": "dist/CoinBot.js",
+    "main": "dist/CoinBot.bundle.js",
     "typings": "dist/CoinBot.js",
     "scripts": {
         "clean": "rm -rf ./dist/*",
         "grunt": "grunt",
-        "addon-prepare": "npm run grunt && npm run compile",
+        "addon-prepare": "npm run grunt && npm run compile && npm run addon-webpack",
+        "addon-webpack": "webpack --config webpack.config.js",
         "addon-release": "npm run clean && npm run addon-prepare && cp ./package.json ./dist/package.json",
         "compile": "tsc -p ."
     },
@@ -25,15 +26,27 @@
         "timer-stopwatch": "^0.2.0"
     },
     "devDependencies": {
+        "@babel/core": "^7.1.0",
+        "@babel/preset-env": "^7.1.0",
         "@types/lowdb": "^1.0.4",
         "@types/node": "^10.9.4",
         "grunt": "^1.0.3",
+        "babel-core": "^6.26.3",
+        "babel-loader": "^8.0.2",
+        "babel-preset-es2015": "^6.24.1",
         "grunt-cli": "^1.2.0",
         "grunt-contrib-watch": "^1.1.0",
         "grunt-ts": "^6.0.0-beta.20",
         "grunt-tslint": "^5.0.2",
         "pkg": "^4.3.3",
         "tslint": "^5.11.0",
-        "typescript": "^2.9.2"
+        "typescript": "^2.9.2",
+        "uglifyjs-webpack-plugin": "^2.0.1",
+        "uglify-es": "^3.3.9",
+        "uglify-js": "^3.4.9",
+        "webpack": "^4.19.0",
+        "webpack-cli": "^3.1.0",
+        "webpack-merge": "^4.1.4",
+        "webpack-node-externals": "^1.7.2"
     }
 }
