@@ -4,10 +4,12 @@ import { Helper } from "../../Helper";
 export class Coins {
     private db: Database;
     private api: any;
+    private i18n: any;
 
-    constructor(database: Database, api: any) {
+    constructor(database: Database, api: any, i18n: any) {
         this.db = database;
         this.api = api;
+        this.i18n = i18n;
     }
     
     public top5(): void {
@@ -21,8 +23,10 @@ export class Coins {
                 message += `${user.name} (${Helper.formatCurrency(user.coins)}), `;
             }
         });
-        
-        this.api.say(`Top 5: ${message}`);
+
+        this.api.say(this.i18n.get("coins.top5", this.db.messages().coins.top5, {
+            "users": message
+        }));
 
         return;
     }

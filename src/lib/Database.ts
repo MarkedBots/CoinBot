@@ -24,6 +24,51 @@ export class Database {
             users: [],
             admins: [],
             mods: [],
+            defaultMessages: {
+                admin: {
+                    makeitrain: "&username is making it rain! IT'S RAINING MONEY! Have &amount coins everyone!",
+                    give: {
+                        not_enough_params: "The give command must include a name AND an amount. Ex: !admin give username 10",
+                        nan: "The amount you gave is not a number.",
+                        must_be_more_than_zero: "You must give more than 0.",
+                        completed: "The coins have been applied to the account (&username)."
+                    },
+                    take: {
+                        not_enough_params: "The take command must include a name AND an amount. Ex: !admin take username 10",
+                        nan: "The amount you gave is not a number.",
+                        must_be_more_than_zero: "You must take more than 0.",
+                        completed: "The coins have been taken from the account (&username)."
+                    }
+                },
+                coins: {
+                    balance: "&username's balance: &amount",
+                    top5: "Top 5: &users",
+                    transfer: {
+                        nan: "The amount you gave is not a number.",
+                        must_be_more_than_zero: "You must transfer more than 0.",
+                        not_enough_coins: "You do not have &amount &fromUser",
+                        completed: "&amount has been transfered to the account. (&fromUser -> &toUser)"
+                    }
+                },
+                gambling: {
+                    rps: {
+                        not_enough_params: "",
+                        to_low_bet: "",
+                        not_enough_coins: "",
+                        invalid_choice: "",
+                        result_tied: "",
+                        result_bot_win: "",
+                        result_user_win: ""
+                    },
+                    gtn: {
+                        not_enough_params: "",
+                        to_low_bet: "",
+                        to_low_return_percent: "",
+                        result_bot_win: "",
+                        result_user_win: ""
+                    }
+                }
+            }
         }).write();
 
         this.usersModel = new Users(this.db, this.log);
@@ -39,6 +84,10 @@ export class Database {
 
     public currency(): any {
         return this.config().currency;
+    }
+
+    public messages(): any {
+        return this.db.get("defaultMessages").value();
     }
 
     public users(): Users {

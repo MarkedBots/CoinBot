@@ -36,7 +36,7 @@ exports.constructor = (api: any, helper: any, log: any, pubsub: any, i18n: any) 
     this.pubsubManager = new PubSub(this.database, this.pubsub);
     this.gambling = new Gambling(this.database, this.api);
     this.adminCommand = new Admin(this.database, this.api);
-    this.coinCommand = new Coins(this.database, this.api);
+    this.coinCommand = new Coins(this.database, this.api, this.i18n);
     //this.clan = new Clan(this.database, this.api);
 
     CBHelper.setCBCEHelper(this.helper);
@@ -155,10 +155,24 @@ exports.admin = {
                 });
             });
 
-            this.api.say(this.i18n.get("admin.makeitrain", "&username is making it rain! IT'S RAINING MONEY! Have &amount coins everyone!", {
+            this.api.say(this.i18n.get("admin.makeitrain", this.database.messages().admin.makeitrain, {
                 "username": message.username,
                 "amount": CBHelper.formatCurrency(amount)
             }));
+
+            return;
+        } else if (parameters[0].toLowerCase() === "r*" || parameters[0].toLowerCase() === "resetall") {
+            if (parameters[1] === undefined ) {
+                this.api.say("The make it rain command must include an amount. Ex: !admin resetall 10");
+            }
+
+            let amount: number = Number(parameters[1]);
+
+            this.database.database().get("users").value().forEach((el: any) => {
+                this.database.database().get("users").find({ id: el.id }).assign({ coins: amount }).write();
+            });
+
+            this.api.say(`Everyone has been reset to ${CBHelper.formatCurrency(amount)}`);
 
             return;
         }
